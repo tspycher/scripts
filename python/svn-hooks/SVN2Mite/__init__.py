@@ -126,7 +126,7 @@ class SVN2Mite(object):
             if not n.nodeType == n.TEXT_NODE: 
                 var = n.nodeName
                 val = str()
-                if n.childNodes.item(0): val = str(n.childNodes.item(0).nodeValue).encode('utf-8')
+                if n.childNodes.item(0): val = str(n.childNodes.item(0).nodeValue.encode('utf-8'))
                 values[var] = val
                 
             if len(n.childNodes): 
