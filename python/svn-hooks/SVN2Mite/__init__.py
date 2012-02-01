@@ -20,6 +20,8 @@ class SVN2Mite(object):
         regex = "(?<=@)[0-9 ].*"
         regexTime = re.compile(regex)
         matchTime = regexTime.search(message)
+        if not matchTime: return False
+        
         time = matchTime.group()
         
         if not time: return False
