@@ -3,8 +3,8 @@ import sys
 import subprocess
 
 def hookSVN2Mite(repository, author, message):
-    import SVN2Mite
-    mite = SVN2Mite('75e781252a82fe9', 'https://tspycher.mite.yo.lk')
+    from SVN2Mite import SVN2Mite
+    mite = SVN2Mite('APIKEY', 'https://URL.mite.yo.lk')
     mite.hook(repository, author, message)
     return 0
 
@@ -17,10 +17,6 @@ def main(args):
     repoName = str(repoPath).split('/')[-1]
     message = svnLook(log_cmd = '%s log -t "%s" "%s"' % (svnlookbin, txn, repoPath)) #`$SVNLOOK log -t "$TXN" "$REPOS"`
     author = svnLook(log_cmd = '%s author -t "%s" "%s"' % (svnlookbin, txn, repoPath)) #`$SVNLOOK author -t "$TXN" "$REPOS"`
-    
-    sys.stderr.write("Reponame: %s" % repoName)
-    sys.stderr.write("Message: %s" % message)
-    sys.stderr.write("Author: %s" % author)
 
     errors += hookSVN2Mite(repoName, message,author)
     return errors
