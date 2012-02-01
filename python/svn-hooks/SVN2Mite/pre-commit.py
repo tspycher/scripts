@@ -1,11 +1,20 @@
 #!/usr/bin/python
 import sys
 import subprocess
+import re
 
-def hookSVN2Mite(repository, author, message):
+def hookSVN2Mite(repository, txn, author, message):
     from SVN2Mite import SVN2Mite
     mite = SVN2Mite('APIKEY', 'https://URL.mite.yo.lk')
-    mite.hook(repository, author, message)
+    mite.hook(repository, author, "Subversion commit with ID %s from %s in Repository %s and Message: %s" % (txn, author, repository, message) )
+    return 0
+
+def hookCommitWithTracker(message):
+    regex = re.compile('(?<=#)[0-9]{1,}')
+    match = regex.search(message)
+    if not match:
+        sys.stderr.write("No Tracker ID has been provided.")
+        return 1
     return 0
 
 def main(args):
@@ -15,10 +24,11 @@ def main(args):
     txn = args[1]
         
     repoName = str(repoPath).split('/')[-1]
-    message = svnLook(log_cmd = '%s log -t "%s" "%s"' % (svnlookbin, txn, repoPath)) #`$SVNLOOK log -t "$TXN" "$REPOS"`
-    author = svnLook(log_cmd = '%s author -t "%s" "%s"' % (svnlookbin, txn, repoPath)) #`$SVNLOOK author -t "$TXN" "$REPOS"`
+    message = svnLook('%s log -t "%s" "%s"' % (svnlookbin, txn, repoPath))
+    author = svnLook('%s author -t "%s" "%s"' % (svnlookbin, txn, repoPath))
 
-    errors += hookSVN2Mite(repoName, message,author)
+    errors += hookCommitWithTracker(message)
+    errors += hookSVN2Mite(repoName, txn, author, message)
     return errors
 
 def svnLook(log_cmd):
