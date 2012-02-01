@@ -85,7 +85,7 @@ class SVN2Mite(object):
         <service-id>%i</service-id>
         <project-id>%i</project-id>
         <user-id>%i</user-id>
-        </time-entry>""" % (minutes, description, userId, projectId, serviceId)
+        </time-entry>""" % (minutes, description, serviceId, projectId, userId)
         
         self.__request('/time_entries.xml', request)
     
