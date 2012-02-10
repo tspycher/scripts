@@ -17,6 +17,17 @@ def hookCommitWithTracker(message):
         return 1
     return 0
 
+def svnLook(log_cmd):
+    p = subprocess.Popen(log_cmd,
+                         shell=True,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         stdin=subprocess.PIPE)
+    p.stderr.close()
+    p.stdin.close()
+
+    return str(p.stdout.read().rstrip('\n'))
+
 def main(args):
     errors = 0
     svnlookbin = "/usr/bin/svnlook"
@@ -30,17 +41,6 @@ def main(args):
     errors += hookCommitWithTracker(message)
     errors += hookSVN2Mite(repoName, txn, author, message)
     return errors
-
-def svnLook(log_cmd):
-    p = subprocess.Popen(log_cmd,
-                         shell=True,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         stdin=subprocess.PIPE)
-    p.stderr.close()
-    p.stdin.close()
-
-    return str(p.stdout.read().rstrip('\n'))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
